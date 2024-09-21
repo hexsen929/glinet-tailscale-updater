@@ -35,7 +35,7 @@ INFO='\033[0m' # No Color
 invoke_intro() {
     echo "┌────────────────────────────────────────────────────────────────────────┐"
     echo "│ GL.iNet router script by Admon 🦭 for the GL.iNet community            │"
-    echo "| Version: $SCRIPT_VERSION                                                 |"
+    echo "| Version: $SCRIPT_VERSION                                               |"
     echo "├────────────────────────────────────────────────────────────────────────┤"
     echo "│ WARNING: THIS SCRIPT MIGHT POTENTIALLY HARM YOUR ROUTER!               │"
     echo "│ It's only recommended to use this script if you know what you're doing.│"
@@ -45,7 +45,7 @@ invoke_intro() {
     echo "│ Prerequisites:                                                         │"
     echo "│ 1. At least 15 MB of free space.                                       │"
     echo "│ 2. Firmware version 4 or higher.                                       │"
-    echo "│ 3. Architecture arm64, armv7 or mips.                                  │"
+    echo "│ 3. Architecture arm64, armv7 or mips or x86_64.                        │"
     echo "└────────────────────────────────────────────────────────────────────────┘"
 }
 
@@ -67,6 +67,9 @@ preflight_check() {
     if [ "$ARCH" = "aarch64" ]; then
         TINY_ARCH="arm64"
         log "SUCCESS" "Architecture: arm64"
+    elif [ "$ARCH" = "x86_64" ]; then
+        TINY_ARCH="amd64"
+        log "SUCCESS" "Architecture: amd64"
     elif [ "$ARCH" = "armv7l" ]; then
         TINY_ARCH="arm"
         log "SUCCESS" "Architecture: armv7"
@@ -164,6 +167,8 @@ get_latest_tailscale_version() {
         log "INFO" "Detecting latest tailscale version"
         if [ "$ARCH" = "aarch64" ]; then
             TAILSCALE_VERSION_NEW=$(curl -s https://pkgs.tailscale.com/stable/ | grep -o 'tailscale_[0-9]*\.[0-9]*\.[0-9]*_arm64\.tgz' | head -n 1)
+        elif [ "$ARCH" = "x86_64" ]; then
+            TAILSCALE_VERSION_NEW=$(curl -s https://pkgs.tailscale.com/stable/ | grep -o 'tailscale_[0-9]*\.[0-9]*\.[0-9]*_amd64\.tgz' | head -n 1)
         elif [ "$ARCH" = "armv7l" ]; then
             TAILSCALE_VERSION_NEW=$(curl -s https://pkgs.tailscale.com/stable/ | grep -o 'tailscale_[0-9]*\.[0-9]*\.[0-9]*_arm\.tgz' | head -n 1)
         elif [ "$ARCH" = "mips" ]; then
@@ -245,6 +250,8 @@ compress_binaries() {
 
     if [ "$ARCH" = "aarch64" ]; then
         UPX_ARCH="arm64"
+    elif [ "$ARCH" = "x86_64" ]; then
+        UPX_ARCH="amd64"
     elif [ "$ARCH" = "armv7l" ]; then
         UPX_ARCH="arm"
     elif [ "$ARCH" = "mips" ]; then
