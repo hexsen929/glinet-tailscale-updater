@@ -2,13 +2,15 @@ name: Build smaller Tailscale binary
 on:
   schedule:
     - cron: '30 0/12 * * *'
+  watch:
+    types: started
   workflow_dispatch:
 env:
   SOFTWARE_NAME: "Tailscale"
   FILE_NAME: "tailscaled"
   REPO: "tailscale/tailscale"
-  REPO_SMALL: "Admonstrator/glinet-tailscale-updater"
-  GIT_AUTHOR_NAME: "Admonstator"
+  REPO_SMALL: "hexsen929/glinet-tailscale-updater"
+  GIT_AUTHOR_NAME: "hexsen929"
 jobs:
   check-versions:
     runs-on: ubuntu-latest
